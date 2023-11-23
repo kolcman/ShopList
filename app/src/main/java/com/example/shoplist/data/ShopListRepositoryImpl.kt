@@ -14,17 +14,9 @@ object ShopListRepositoryImpl : ShopListRepository {
 
     private var autoIncrementId = 0
 
-    init {
-        for (i in 0 until 100) {
-            val item = ShopItem("Name $i", i, kotlin.random.Random.nextBoolean()).apply {
-                addShopItem(this)
-            }
-        }
-    }
-
     override fun addShopItem(shopItem: ShopItem) {
         if (shopItem.id == ShopItem.UNDEFINED_ID) {
-            shopItem.id == autoIncrementId++
+            shopItem.id = autoIncrementId++
         }
         shopList.add(shopItem)
         updateList()
