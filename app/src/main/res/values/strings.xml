@@ -49,4 +49,6 @@
     <string name="save_textbutton">Save</string>
     <string name="error_input_name">Incorrect Name</string>
     <string name="error_input_count">Incorrect Count</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
