@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoplist.R
+import com.example.shoplist.databinding.ItemShopEnabledBinding
 import com.example.shoplist.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
