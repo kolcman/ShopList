@@ -2,13 +2,13 @@ package com.example.shoppinglist.domain
 
 interface ShopListRepository {
 
-    fun addShopItem(item: ShopItem)
+    suspend fun addShopItem(item: ShopItem)
 
-    fun removeShopItem(item: ShopItem)
+    suspend fun removeShopItem(item: Int)
 
-    fun editShopItem(item: ShopItem)
+    suspend fun editShopItem(item: ShopItem)
 
-    fun getItemFromId(shopItemId: Int): ShopItem
+    suspend fun getItemFromId(shopItemId: Int): ShopItem
 
-    fun getShopList(): List<ShopItem>
+    suspend fun getShopList(): List<ShopItem>
 }
