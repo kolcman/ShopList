@@ -14,8 +14,11 @@ class App : Application() {
         ).build()
     }
 
-    val shopRepository: ShopListRepository by lazy {
-        ShopListRepositoryImpl(dataBase.shopItemDao())
+    override fun onCreate() {
+        super.onCreate()
+        ShopListRepositoryImpl.init(dataBase.shopItemDao())
     }
-
 }
+
+
+

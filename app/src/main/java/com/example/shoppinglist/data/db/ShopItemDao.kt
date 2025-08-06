@@ -1,7 +1,9 @@
 package com.example.shoppinglist.data.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.shoppinglist.domain.ShopItem
@@ -9,19 +11,18 @@ import com.example.shoppinglist.domain.ShopItem
 @Dao
 interface ShopItemDao {
 
-    @Insert
-    fun addShopItem(shopItem: ShopItem)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addShopItem(shopItem: ShopItem)
 
     @Query("DELETE FROM  shopItems WHERE id = :shopItemId")
-    fun deleteShopItem(shopItemId: Int)
+    suspend fun deleteShopItem(shopItemId: Int)
 
     @Query("SELECT * FROM shopItems")
-    fun getAll(): List<ShopItem>
+    fun getAll(): LiveData<List<ShopItem>>
 
     @Query("SELECT * FROM shopItems WHERE id = :shopItemId")
-    fun getShopItem(shopItemId:Int): ShopItem
+    suspend fun getShopItem(shopItemId:Int): ShopItem
 
     @Update
-    fun editShopItem(shopItem: ShopItem)
-
+    suspend fun editShopItem(shopItem: ShopItem)
 }

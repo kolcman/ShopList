@@ -1,30 +1,37 @@
 package com.example.shoppinglist.data
 
+import androidx.lifecycle.LiveData
 import com.example.shoppinglist.data.db.ShopItemDao
 import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.domain.ShopListRepository
 
-class ShopListRepositoryImpl(private val shopItemDao: ShopItemDao) :
+object ShopListRepositoryImpl :
     ShopListRepository {
 
-    override suspend fun addShopItem(item: ShopItem) {
-        shopItemDao.addShopItem(item)
+
+    private lateinit var dao: ShopItemDao
+
+    fun init(dao: ShopItemDao) {
+        this.dao = dao
     }
 
-    override suspend fun removeShopItem(itemId: Int) {
-        shopItemDao.deleteShopItem(itemId)
+    override suspend fun addShopItem(item: ShopItem) {
+        dao.addShopItem(item)
+    }
+
+    override suspend fun removeShopItem(shopItemId: Int) {
+        dao.deleteShopItem(shopItemId)
     }
 
     override suspend fun editShopItem(item: ShopItem) {
-        shopItemDao.editShopItem(item)
+        dao.editShopItem(item)
     }
 
     override suspend fun getItemFromId(shopItemId: Int): ShopItem {
-        return shopItemDao.getShopItem(shopItemId)
+        return dao.getShopItem(shopItemId)
     }
 
-    override suspend fun getShopList(): List<ShopItem> {
-        return shopItemDao.getAll()
+    override fun getShopList(): LiveData<List<ShopItem>> {
+        return dao.getAll()
     }
-
 }
