@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ShoppingList</string>
     <string name="btn_description">Add item button</string>
+    <string name="hint_et_name">Имя:</string>
+    <string name="hint_et_count">Количество:</string>
+    <string name="btn_save">Сохранить</string>
 </resources>
