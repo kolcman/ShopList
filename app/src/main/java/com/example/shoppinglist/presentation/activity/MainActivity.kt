@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setUpRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopItems.observe(this) {
-            shopListAdapter.listItems = it
+            shopListAdapter.submitList(it)
         }
     }
 
@@ -62,8 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun setUpListeners() {
         shopListAdapter.onShopItemLongClickListener = {
-            it.isActive = !it.isActive
-            viewModel.editShopItem(it)
+            viewModel.toggleShopItem(it.id)
         }
         shopListAdapter.onShopItemClickListener = {
             Log.d("TAG", "Open new screen: ${it.name}")
@@ -78,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = shopListAdapter.listItems[viewHolder.adapterPosition]
+                val item = shopListAdapter.currentList[viewHolder.adapterPosition]
                 viewModel.removeShopItem(item.id)
             }
         } )
