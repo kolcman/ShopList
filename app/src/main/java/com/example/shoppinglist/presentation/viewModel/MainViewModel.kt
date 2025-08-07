@@ -19,26 +19,13 @@ class MainViewModel() : ViewModel() {
     private val getShopItem = GetShopItemUseCase(repository)
     private val getShopListUseCase = GetShopListUseCase(repository)
     private val removeShopItemUseCase = RemoveShopItemUseCase(repository)
-    private val addShopItemUseCase = AddShopItemUseCase(repository)
     private val editShopItemUseCase = EditShopItemUseCase(repository)
 
     val shopItems = getShopListUseCase.getShopList()
 
-    fun getShopList() {
-        viewModelScope.launch {
-            getShopListUseCase.getShopList()
-        }
-    }
-
     fun removeShopItem(itemId: Int) {
         viewModelScope.launch {
             removeShopItemUseCase.removeShopItem(itemId)
-        }
-    }
-
-    fun addShopItem(shopItem: ShopItem) {
-        viewModelScope.launch {
-            addShopItemUseCase.addShopItem(shopItem)
         }
     }
 
