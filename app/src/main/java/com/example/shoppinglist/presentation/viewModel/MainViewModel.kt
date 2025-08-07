@@ -13,9 +13,6 @@ import kotlinx.coroutines.launch
 class MainViewModel() : ViewModel() {
 
     private val repository = ShopListRepositoryImpl
-
-
-
     private val getShopListUseCase = GetShopListUseCase(repository)
     private val removeShopItemUseCase = RemoveShopItemUseCase(repository)
     private val addShopItemUseCase = AddShopItemUseCase(repository)
