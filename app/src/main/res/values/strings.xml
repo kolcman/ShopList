@@ -4,4 +4,6 @@
     <string name="hint_et_name">Имя:</string>
     <string name="hint_et_count">Количество:</string>
     <string name="btn_save">Сохранить</string>
+    <string name="error_input_name">Ошибка ввода имени</string>
+    <string name="error_input_count">Ошибка ввода количества</string>
 </resources>

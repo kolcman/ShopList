@@ -1,7 +1,6 @@
 package com.example.shoppinglist.presentation.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.presentation.ui.shopItem.ShopListAdapter
 import com.example.shoppinglist.presentation.viewModel.MainViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
     private lateinit var touchHelper: ItemTouchHelper
+    private lateinit var btnAdd: FloatingActionButton
     private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,14 +33,13 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        initViews()
         setUpRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopItems.observe(this) {
             shopListAdapter.submitList(it)
         }
     }
-
 
     private fun setUpRecyclerView() {
         val rvShopList = findViewById<RecyclerView>(R.id.rv_shop_item)
@@ -60,16 +60,22 @@ class MainActivity : AppCompatActivity() {
         setUpSwipeListeners()
         touchHelper.attachToRecyclerView(rvShopList)
     }
+
     private fun setUpListeners() {
         shopListAdapter.onShopItemLongClickListener = {
             viewModel.toggleShopItem(it.id)
         }
         shopListAdapter.onShopItemClickListener = {
-            Log.d("TAG", "Open new screen: ${it.name}")
+            startActivity(ShopItemActivity.newIntentEdit(this, it.id))
+        }
+        btnAdd.setOnClickListener {
+            startActivity(ShopItemActivity.newIntentAdd(this))
         }
     }
+
     private fun setUpSwipeListeners() {
-        touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
+        touchHelper = ItemTouchHelper(object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -80,6 +86,10 @@ class MainActivity : AppCompatActivity() {
                 val item = shopListAdapter.currentList[viewHolder.adapterPosition]
                 viewModel.removeShopItem(item.id)
             }
-        } )
+        })
+    }
+
+    private fun initViews() {
+        btnAdd = findViewById<FloatingActionButton>(R.id.btn_add_shop_item)
     }
 }

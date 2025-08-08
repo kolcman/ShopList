@@ -34,14 +34,12 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     private val saveItemUseCase = AddShopItemUseCase(repository)
     private val editItemUseCase = EditShopItemUseCase(repository)
 
-
     fun getShopItem(shopItemId: Int) {
         viewModelScope.launch {
             val item = getShopItemUseCase.getItemFromId(shopItemId)
             _shopItem.value = item
         }
     }
-
 
     fun saveItem(name: String?, count: String?) {
         val name = parseName(name)
@@ -61,7 +59,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
             viewModelScope.launch {
                 _shopItem.value?.let {
                     val item = it.copy(name = name, count = count)
-                    editItemUseCase.editShopItem(ShopItem(name = name, count = count))
+                    editItemUseCase.editShopItem(item)
                     finishWork()
                 }
             }
