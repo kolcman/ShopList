@@ -13,85 +13,45 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.presentation.activity.ShopItemActivity.Companion.UNDEFINED_ID
+import com.example.shoppinglist.presentation.fragment.ShopItemFragment
 import com.example.shoppinglist.presentation.viewModel.ShopItemViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListeners {
 
-class ShopItemActivity : AppCompatActivity() {
-
-    private lateinit var tilName: TextInputLayout
-    private lateinit var tilCount: TextInputLayout
-    private lateinit var etName: TextInputEditText
-    private lateinit var etCount: TextInputEditText
-    private lateinit var btnSave: AppCompatButton
-    private lateinit var viewModel: ShopItemViewModel
-    private var screenMode =  MODE_UNKNOWN
+    private var screenMode = MODE_UNKNOWN
     private var shopItemId = UNDEFINED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_shop_item)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.shop_item_container)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         parseIntent()
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews()
-        setUpWatchers()
-        launchRightMode()
-        observeViewModel()
-}
+        if (savedInstanceState == null){
+            launchRightMode()
+        }
+    }
 
-    private fun observeViewModel(){
-        viewModel.errorInputName.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_input_name)
-            } else {
-                null
-            }
-            tilName.error = message
-        }
-        viewModel.errorInputCount.observe(this){
-            val message = if(it) {
-                getString(R.string.error_input_count)
-            } else {
-                null
-            }
-            tilCount.error = message
-        }
-        viewModel.shouldCloseScreen.observe(this) {
-            finish()
-        }
+    override fun onEditingFinished() {
+        finish()
     }
 
     private fun launchRightMode() {
-        when (screenMode) {
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
+        val fragment = when (screenMode) {
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            else -> throw RuntimeException("Unknown mode $screenMode")
         }
-    }
-
-    private fun launchEditMode() {
-        viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this) {
-            etName.setText(it.name)
-            etCount.setText(it.count.toString())
-        }
-        btnSave.setOnClickListener {
-            viewModel.updateItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-    private fun launchAddMode() {
-        btnSave.setOnClickListener {
-            viewModel.saveItem(etName.text?.toString(), etCount.text?.toString())
-        }
-
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.shop_item_container, fragment)
+            .commit()
     }
 
     private fun parseIntent() {
@@ -108,23 +68,6 @@ class ShopItemActivity : AppCompatActivity() {
                 throw RuntimeException("Param shop item id is absent")
             }
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, UNDEFINED_ID)
-        }
-    }
-
-    private fun initViews() {
-        tilName = findViewById(R.id.til_name)
-        tilCount = findViewById(R.id.til_count)
-        etName = findViewById(R.id.et_name)
-        etCount = findViewById(R.id.et_count)
-        btnSave = findViewById(R.id.btn_save)
-    }
-
-    private fun setUpWatchers() {
-        etName.doOnTextChanged { text, _, _, _ ->
-            viewModel.resetInputName()
-        }
-        etCount.doOnTextChanged { text, _, _, _ ->
-            viewModel.resetInputCount()
         }
     }
 
