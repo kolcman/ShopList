@@ -5,29 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
-import com.example.shoppinglist.domain.ShopItem
-import com.example.shoppinglist.presentation.activity.ShopItemActivity.Companion.UNDEFINED_ID
+import com.example.shoppinglist.databinding.ActivityShopItemBinding
 import com.example.shoppinglist.presentation.fragment.ShopItemFragment
-import com.example.shoppinglist.presentation.viewModel.ShopItemViewModel
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 
 class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListeners {
 
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = UNDEFINED_ID
+    private lateinit var binding: ActivityShopItemBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_shop_item)
+        binding = ActivityShopItemBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.shop_item_container)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)

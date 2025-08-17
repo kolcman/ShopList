@@ -1,4 +1,6 @@
-package com.example.shoppinglist.domain
+package com.example.shoppinglist.data.domain
+
+import com.example.shoppinglist.data.db.ShopItemDbModel
 
 class EditShopItemUseCase(private val shopListRepository: ShopListRepository) {
 

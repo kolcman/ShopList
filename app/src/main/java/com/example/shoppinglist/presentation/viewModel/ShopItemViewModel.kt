@@ -6,10 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.shoppinglist.data.ShopListRepositoryImpl
-import com.example.shoppinglist.domain.AddShopItemUseCase
-import com.example.shoppinglist.domain.EditShopItemUseCase
-import com.example.shoppinglist.domain.GetShopItemUseCase
-import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.data.db.ShopItemDbModel
+import com.example.shoppinglist.data.domain.AddShopItemUseCase
+import com.example.shoppinglist.data.domain.EditShopItemUseCase
+import com.example.shoppinglist.data.domain.GetShopItemUseCase
+import com.example.shoppinglist.data.domain.ShopItem
 import kotlinx.coroutines.launch
 
 class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
@@ -29,7 +30,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     val shouldCloseScreen: LiveData<Unit>
         get() = _shouldCloseScreen
 
-    private val repository = ShopListRepositoryImpl
+    private val repository = ShopListRepositoryImpl(application)
     private val getShopItemUseCase = GetShopItemUseCase(repository)
     private val saveItemUseCase = AddShopItemUseCase(repository)
     private val editItemUseCase = EditShopItemUseCase(repository)
