@@ -1,22 +1,21 @@
 package com.example.shoppinglist.data
 
+import android.app.Application
 import androidx.lifecycle.LiveData
-import com.example.shoppinglist.data.db.ShopItemDao
-import com.example.shoppinglist.domain.ShopItem
-import com.example.shoppinglist.domain.ShopListRepository
+import androidx.lifecycle.map
+import com.example.shoppinglist.data.db.ShopItemDataBase
+import com.example.shoppinglist.data.domain.ShopItem
+import com.example.shoppinglist.data.domain.ShopListRepository
 
-object ShopListRepositoryImpl :
+
+class ShopListRepositoryImpl(application: Application) :
     ShopListRepository {
 
-
-    private lateinit var dao: ShopItemDao
-
-    fun init(dao: ShopItemDao) {
-        this.dao = dao
-    }
+    private val dao = ShopItemDataBase.getInstance(application).shopItemDao()
+    private val mapper = ShopListMapper()
 
     override suspend fun addShopItem(item: ShopItem) {
-        dao.addShopItem(item)
+        dao.addShopItem(mapper.mapEntityToDbModel(item))
     }
 
     override suspend fun removeShopItem(shopItemId: Int) {
@@ -24,14 +23,15 @@ object ShopListRepositoryImpl :
     }
 
     override suspend fun editShopItem(item: ShopItem) {
-        dao.editShopItem(item)
+        dao.editShopItem(mapper.mapEntityToDbModel(item))
     }
 
     override suspend fun getItemFromId(shopItemId: Int): ShopItem {
-        return dao.getShopItem(shopItemId)
+        val dbModel = dao.getShopItem(shopItemId)
+        return mapper.mapDbModelToEntity(dbModel)
     }
 
     override fun getShopList(): LiveData<List<ShopItem>> {
-        return dao.getAll()
+        return dao.getAll().map {  mapper.mapListDbModelToListEntity(it) }
     }
 }
